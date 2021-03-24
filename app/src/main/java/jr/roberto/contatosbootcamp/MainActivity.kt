@@ -1,14 +1,18 @@
 package jr.roberto.contatosbootcamp
 
+import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.provider.ContactsContract
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity() {
 
     val REQUEST_CONTACT = 1
+    val LINEAR_LAYOUT_VERTICAL = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         val contactsList: ArrayList<Contact> = ArrayList()
 
         val cursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-        null, null, null, null)
+        null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)
 
         if(cursor != null) {
             while (cursor.moveToNext()) {
@@ -46,5 +50,11 @@ class MainActivity : AppCompatActivity() {
             }
             cursor.close()
         }
+
+        val adapter = ContactsAdapter(contactsList)
+        val contactRecyclerView = findViewById<RecyclerView>(R.id.contacts_recycle_view)
+        contactRecyclerView.layoutManager = LinearLayoutManager(this, LINEAR_LAYOUT_VERTICAL, false)
+        contactRecyclerView.adapter = adapter
+
     }
 }
